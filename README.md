@@ -2,7 +2,13 @@
 
 Código fuente de https://csmelendez.github.io/personal/: tecnología sanitaria y bioeconomía forestal, proyectos de I+D+i, transferencia, docencia y gestión universitaria.
 
-- `index.html`: la web completa, bilingüe (español e inglés), sin dependencias externas ni cookies.
+- `index.html`: portada (sobre mí, docencia, resumen de proyectos y de gestión, divulgación, medios y contacto).
+- `proyectos.html`: Proyectos (I+D+i), con las cinco fichas de impacto y las tablas de investigación y transferencia.
+- `cv.html`: trayectoria docente completa y gestión universitaria, pensada para imprimir como PDF.
+- `privacidad.html`: política de privacidad.
+- `sitemap.xml`: mapa del sitio para Google Search Console.
+
+Todas las páginas son bilingües (español e inglés), comparten estilos y menú y no usan dependencias externas ni cookies.
 - `img/`: fotografía y vista previa para redes sociales.
 
 El clasificador MDR/IVDR enlazado desde Docencia vive en su propio repositorio, [csmelendez/clasificaMD](https://github.com/csmelendez/clasificaMD), y se publica en https://csmelendez.github.io/clasificaMD/. La web lo enlaza con la ruta relativa `../clasificaMD/`, así que los dos repositorios deben estar bajo el mismo usuario.
