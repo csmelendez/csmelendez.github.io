@@ -1,6 +1,6 @@
 # César Sánchez Meléndez · web personal
 
-Código fuente de https://www.cesarsanchezmelendez.es/: tecnología sanitaria y bioeconomía forestal, proyectos de I+D+i, transferencia, docencia y gestión universitaria.
+Código fuente de https://csmelendez.github.io/personal/: tecnología sanitaria y bioeconomía forestal, proyectos de I+D+i, transferencia, docencia y gestión universitaria.
 
 - `index.html`: portada (sobre mí, docencia, resumen de proyectos y de gestión, divulgación, medios y contacto).
 - `proyectos.html`: Proyectos (I+D+i), con las cinco fichas de impacto y las tablas de investigación y transferencia.
@@ -11,13 +11,13 @@ Código fuente de https://www.cesarsanchezmelendez.es/: tecnología sanitaria y 
 Todas las páginas son bilingües (español e inglés), comparten estilos y menú y no usan dependencias externas ni cookies.
 - `img/`: fotografía y vista previa para redes sociales.
 
-El clasificador MDR/IVDR enlazado desde Docencia vive en su propio repositorio, [csmelendez/clasificaMD](https://github.com/csmelendez/clasificaMD), y se publica en https://www.cesarsanchezmelendez.es/clasificaMD/. Este repositorio es el sitio de usuario (`csmelendez.github.io`) y lleva el dominio personalizado, así que cada repositorio de proyecto con GitHub Pages se sirve automáticamente en `https://www.cesarsanchezmelendez.es/<repositorio>/`. La web lo enlaza con la ruta `/clasificaMD/`.
+El clasificador MDR/IVDR enlazado desde Docencia vive en su propio repositorio, [csmelendez/clasificaMD](https://github.com/csmelendez/clasificaMD), y se publica en https://csmelendez.github.io/clasificaMD/. La web lo enlaza con la ruta relativa `../clasificaMD/`, así que los dos repositorios deben estar bajo el mismo usuario.
 
 ## Modo borrador
 
 Los datos pendientes (resultados de las fichas, lista de vídeos, enlaces de prensa) están marcados en amarillo y **ocultos en la web pública**. Para verlos, abre la web con `?borrador`:
 
-https://www.cesarsanchezmelendez.es/?borrador
+https://csmelendez.github.io/personal/?borrador
 
 ## Derechos
 
