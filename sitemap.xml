@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.cesarsanchezmelendez.es/</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://www.cesarsanchezmelendez.es/proyectos.html</loc><lastmod>2026-10-25</lastmod></url>
-  <url><loc>https://www.cesarsanchezmelendez.es/cv.html</loc><lastmod>2026-10-25</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://www.cesarsanchezmelendez.es/</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/en/</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/proyectos.html</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/proyectos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/proyectos.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/proyectos.html"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/en/proyectos.html</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/proyectos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/proyectos.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/proyectos.html"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/cv.html</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/cv.html"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/en/cv.html</loc><lastmod>2026-10-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/cv.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/cv.html"/>
+  </url>
   <url><loc>https://www.cesarsanchezmelendez.es/clasificaMD/</loc><lastmod>2026-10-25</lastmod></url>
   <url><loc>https://www.cesarsanchezmelendez.es/buscaPICO/</loc><lastmod>2026-10-25</lastmod></url>
 </urlset>
