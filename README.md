@@ -8,7 +8,8 @@ Código fuente de https://www.cesarsanchezmelendez.es/: tecnología sanitaria y 
 - `privacidad.html`: política de privacidad y apartado «Sobre esta web y uso de inteligencia artificial».
 - `sitemap.xml`: mapa del sitio para Google Search Console.
 
-Todas las páginas son bilingües (español e inglés), comparten estilos y menú y no usan dependencias externas ni cookies.
+Cada página tiene dos versiones con URL propia: en español en la raíz y en inglés en la carpeta `en/` (https://www.cesarsanchezmelendez.es/en/). Las dos se enlazan entre sí con `hreflang` y el botón ES/EN lleva a la página equivalente del otro idioma. Comparten estilos y menú y no usan dependencias externas ni cookies. Los enlaces antiguos con `?lang=en` llevan a la versión inglesa.
+- `en/`: versión inglesa de las cuatro páginas (se genera sola; no se edita).
 - `img/`: fotografía y vista previa para redes sociales.
 
 - `robots.txt`: indica a los buscadores dónde está el mapa del sitio.
@@ -23,6 +24,7 @@ Las páginas no se editan a mano: se generan desde la carpeta `fuente` con los d
 - `datos/linkedin_actualizable.xlsx`: publicaciones de LinkedIn y entrevistas y prensa.
 - `fuente/fuente-una-pagina.html`: la web completa en una sola página, de donde salen los textos fijos.
 - `fuente/build_*.py`: los scripts que rellenan la fuente con los Excel y la dividen en páginas.
+- `fuente/build_idiomas.py`: separa cada página en su versión española y su versión inglesa, con sus metadatos, datos estructurados y `hreflang`, y genera el `sitemap.xml`.
 
 Para actualizar, sube el Excel modificado a la carpeta `datos` (*Add file → Upload files*). La GitHub Action «Publicar la web» (`.github/workflows/publicar.yml`) ejecuta los scripts, sube las páginas nuevas y la web cambia en uno o dos minutos. Los avisos de los scripts, como una traducción que falta, aparecen en la pestaña *Actions*, en el resumen de cada ejecución. Si algo falla, la web no cambia y GitHub avisa por correo.
 

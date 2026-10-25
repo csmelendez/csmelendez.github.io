@@ -45,6 +45,7 @@ jobs:
             python fuente/build_medios.py datos/linkedin_actualizable.xlsx _trabajo/fuente.html
             python fuente/build_docencia.py datos/docencia_actualizable.xlsx _trabajo/fuente.html
             python fuente/build_pages.py _trabajo/fuente.html _trabajo/dist
+            python fuente/build_idiomas.py _trabajo/dist
           } 2>&1 | tee _trabajo/registro.txt
           if grep -q "AVISO" _trabajo/registro.txt; then
             { echo "### Avisos de los scripts"; echo; grep "AVISO" _trabajo/registro.txt | sed 's/^/- /'; } >> "$GITHUB_STEP_SUMMARY"
@@ -53,6 +54,7 @@ jobs:
           fi
           cp _trabajo/dist/index.html _trabajo/dist/proyectos.html _trabajo/dist/cv.html \
              _trabajo/dist/privacidad.html _trabajo/dist/sitemap.xml _trabajo/dist/robots.txt .
+          mkdir -p en && cp _trabajo/dist/en/*.html en/
           rm -rf _trabajo
 
       - name: Subir las páginas generadas
@@ -60,7 +62,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html proyectos.html cv.html privacidad.html sitemap.xml robots.txt
+          git add index.html proyectos.html cv.html privacidad.html sitemap.xml robots.txt en
           if git diff --cached --quiet; then
             echo "Las páginas no cambian." >> "$GITHUB_STEP_SUMMARY"
             echo "cambios=no" >> "$GITHUB_OUTPUT"
