@@ -15,6 +15,19 @@ Todas las páginas son bilingües (español e inglés), comparten estilos y men�
 
 La web se publica con dominio propio en https://www.cesarsanchezmelendez.es/. Las dos herramientas enlazadas desde Docencia viven en sus propios repositorios y se publican bajo el mismo dominio: el [Clasificador MDR/IVDR](https://github.com/csmelendez/clasificaMD) en https://www.cesarsanchezmelendez.es/clasificaMD/ y el [Buscador de evidencia PICO](https://github.com/csmelendez/buscaPICO) en https://www.cesarsanchezmelendez.es/buscaPICO/. La web las enlaza con las rutas `/clasificaMD/` y `/buscaPICO/`, así que los tres repositorios deben estar bajo el mismo usuario de GitHub, con esos nombres exactos.
 
+## Cómo se actualiza
+
+Las páginas no se editan a mano: se generan desde la carpeta `fuente` con los datos de la carpeta `datos`.
+
+- `datos/docencia_actualizable.xlsx`: asignaturas, trayectoria docente, innovación docente y TFG.
+- `datos/linkedin_actualizable.xlsx`: publicaciones de LinkedIn y entrevistas y prensa.
+- `fuente/fuente-una-pagina.html`: la web completa en una sola página, de donde salen los textos fijos.
+- `fuente/build_*.py`: los scripts que rellenan la fuente con los Excel y la dividen en páginas.
+
+Para actualizar, sube el Excel modificado a la carpeta `datos` (*Add file → Upload files*). La GitHub Action «Publicar la web» (`.github/workflows/publicar.yml`) ejecuta los scripts, sube las páginas nuevas y la web cambia en uno o dos minutos. Los avisos de los scripts, como una traducción que falta, aparecen en la pestaña *Actions*, en el resumen de cada ejecución. Si algo falla, la web no cambia y GitHub avisa por correo.
+
+Las carpetas `datos` y `fuente` no se publican en la web (lo indica `_config.yml`), pero el repositorio es público, así que cualquiera puede ver su contenido en GitHub, incluidas las columnas de observaciones de los Excel.
+
 ## Modo borrador
 
 Los datos pendientes (resultados de las fichas, lista de vídeos, enlaces de prensa) están marcados en amarillo y **ocultos en la web pública**. Para verlos, abre la web con `?borrador`:

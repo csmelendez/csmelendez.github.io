@@ -1,0 +1,5 @@
+# Carpetas del repositorio que no se publican en la web:
+# «datos» guarda los Excel y «fuente», la página de origen y los scripts.
+exclude:
+  - datos
+  - fuente
