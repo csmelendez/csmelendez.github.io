@@ -16,7 +16,7 @@ import json, os, re, sys
 outdir = sys.argv[1]
 BASE = "https://www.cesarsanchezmelendez.es/"
 FECHA = os.environ.get("FECHA") or "2026-10-25"
-PAGES = ["index.html", "proyectos.html", "cv.html", "privacidad.html"]
+PAGES = ["index.html", "recursos.html", "proyectos.html", "cv.html", "privacidad.html"]
 EN_DIR = os.path.join(outdir, "en")
 
 # Textos que la plantilla solo tiene en español y necesitan versión inglesa
@@ -24,6 +24,7 @@ ALT_EN = {
     "César Sánchez Meléndez en una mesa de ponentes / at a conference panel": "César Sánchez Meléndez at a conference panel",
     "César Sánchez Meléndez en una mesa de ponentes": "César Sánchez Meléndez at a conference panel",
     "55 proyectos de I+D+i y 6,3 M€ captados para la UCLM": "55 R&amp;D&amp;I projects and €6.3M secured for UCLM",
+    "Recursos docentes abiertos: herramientas interactivas en abierto": "Open teaching resources: open interactive tools",
 }
 PERSONA_EN = {
     "jobTitle": "Associate Professor (Profesor Titular de Universidad)",
@@ -37,6 +38,8 @@ PERSONA_EN = {
 RECURSO_EN = {
     "buscaPICO": "Interactive teaching tool (in Spanish) that guides users from a structured question (PICO, PECO, SPIDER) to a reproducible search strategy for PubMed, Embase, Cochrane and other databases, documented with PRISMA-S.",
     "clasificaMD": "Interactive teaching tool (in Spanish) to qualify medical devices and classify their risk under Annex VIII of Regulation (EU) 2017/745 (MDR) and Regulation (EU) 2017/746 (IVDR), with EMDN category, conformity assessment route and 113 solved practice cases.",
+    "ets-recursos": "Three interactive pages (in Spanish) on the foundations of health technology assessment and evidence review: who assesses, under which rules and in which phases; the steps of a systematic review, from the PICO-D question to GRADE certainty; and a forest plot lab showing the pooled effect and heterogeneity (I²).",
+    "mufps-recursos": "Six interactive pages (in Spanish) to understand the Spanish vocational training system and its legal framework: national and regional rules, which texts are in force, who decides each part of the curriculum, from a job to a qualification, the dimensions of a training offer and work-based training.",
 }
 
 
@@ -92,7 +95,7 @@ def ld_for(blocks, lang, page, title):
             d["dateModified"] = FECHA
             if lang == "en":
                 d["mainEntity"].update(PERSONA_EN)
-        elif t == "WebPage":
+        elif t in ("WebPage", "CollectionPage"):
             d["url"] = url_for(page, lang)
             d["name"] = title
             d["inLanguage"] = lang
@@ -187,18 +190,22 @@ for page in PAGES:
     open(os.path.join(EN_DIR, page), "w", encoding="utf-8").write(en)
     print(f"{page}: es {len(es)} · en/{page} {len(en)}")
 
+# Herramientas (solo en español): las toma del sitemap que deja build_pages.py, que las saca de las fichas de recursos
+previo = open(os.path.join(outdir, "sitemap.xml"), encoding="utf-8").read()
+herramientas = [u for u in re.findall(r"<loc>([^<]+/)</loc>", previo) if u.startswith(BASE) and u != BASE and not u.startswith(BASE + "en/")]
+
 # Sitemap con las dos versiones de cada página indexable y las herramientas (solo en español)
 sm = ['<?xml version="1.0" encoding="UTF-8"?>',
       '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
-for page in ["index.html", "proyectos.html", "cv.html"]:
+for page in ["index.html", "recursos.html", "proyectos.html", "cv.html"]:
     for lang in ("es", "en"):
         sm.append(f"  <url><loc>{url_for(page, lang)}</loc><lastmod>{FECHA}</lastmod>")
         for alt in ("es", "en"):
             sm.append(f'    <xhtml:link rel="alternate" hreflang="{alt}" href="{url_for(page, alt)}"/>')
         sm.append(f'    <xhtml:link rel="alternate" hreflang="x-default" href="{url_for(page, "es")}"/>')
         sm.append("  </url>")
-for herramienta in ["clasificaMD/", "buscaPICO/"]:
-    sm.append(f"  <url><loc>{BASE}{herramienta}</loc><lastmod>{FECHA}</lastmod></url>")
+for herramienta in herramientas:
+    sm.append(f"  <url><loc>{herramienta}</loc><lastmod>{FECHA}</lastmod></url>")
 sm.append("</urlset>\n")
 open(os.path.join(outdir, "sitemap.xml"), "w", encoding="utf-8").write("\n".join(sm))
 print("idiomas separados y sitemap con hreflang")
