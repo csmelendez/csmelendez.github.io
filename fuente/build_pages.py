@@ -1,9 +1,9 @@
-"""Divide la web de una sola página en index, proyectos, cv y privacidad con una plantilla común."""
+"""Divide la web de una sola página en index, recursos, proyectos, cv y privacidad con una plantilla común."""
 import re, sys, json, os
 src, outdir = sys.argv[1], sys.argv[2]
 S = open(src, encoding="utf-8").read()
 BASE = "https://www.cesarsanchezmelendez.es/"
-FECHA = os.environ.get("FECHA") or "2026-10-23"  # fecha de la última actualización: datos estructurados y sitemap (la GitHub Action pone la del día)
+FECHA = os.environ.get("FECHA") or "2026-11-11"  # fecha de la última actualización: datos estructurados y sitemap (la GitHub Action pone la del día)
 
 def bi(es, en):
     return f'<span data-l="es">{es}</span><span data-l="en">{en}</span>'
@@ -25,20 +25,24 @@ def unwrap_details(h):
 # ---------- piezas comunes ----------
 head = S[:S.index('</head>')]
 ld_blocks = re.findall(r'<script type="application/ld\+json">.*?</script>', head, flags=re.S)
+ld_recursos = [b for b in ld_blocks if '"LearningResource"' in b]   # van a recursos.html
+ld_index = [b for b in ld_blocks if b not in ld_recursos]           # el resto se queda en la portada
 style = re.search(r'<style>.*?</style>', head, flags=re.S).group(0)
 script = S[S.index('<script>(function(){var h=document.documentElement'):S.index('</body>')]
 
-extra_css = ("main{display:block}.pagehead{background:var(--red);color:#fff}.pagehead .in{max-width:1080px;margin:auto;padding:30px 24px 34px}"
+extra_css = (".pagehead{background:var(--red);color:#fff}.pagehead .in{max-width:1080px;margin:auto;padding:30px 24px 34px}main{display:block}"
              ".pagehead a{color:#fff}.pagehead .eyebrow a{text-decoration:none;font-weight:700}.pagehead .eyebrow a:hover{text-decoration:underline}"
              ".pagehead h1{font-size:2.2rem}.pagehead .sub{max-width:62ch;font-size:1.1rem;margin:.4em 0 0}"
              "nav a[aria-current=page]{color:var(--red);text-decoration:underline;text-underline-offset:4px}"
              ".more-cta{margin:14px 0 0}.mini{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}.mini .card h4{font-size:1.05rem}.mini .card p{margin:.3em 0}"
+             ".res .card h3{font-size:1.15rem;line-height:1.25;margin:.1em 0 .4em}"
              "footer nav{position:static;border:0;background:none}footer .links{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px}"
              "@media print{.pagehead{background:#fff;color:#000}.pagehead a{color:#000}}")
 style = style.replace('</style>', extra_css + '</style>')
 
 NAV = [("index.html#sobre-mi", "Sobre mí", "About", "index"),
        ("index.html#docencia", "Docencia", "Teaching", "index"),
+       ("recursos.html", "Recursos abiertos", "Open resources", "recursos"),
        ("proyectos.html", "Proyectos (I+D+i)", "Projects (R&amp;D&amp;I)", "proyectos"),
        ("index.html#divulgacion", "Divulgación y medios", "Outreach and media", "index"),
        ("cv.html", "CV", "CV", "cv"),
@@ -66,7 +70,8 @@ IA = (bi("Web elaborada con ayuda de herramientas de inteligencia artificial; to
       f' <a href="privacidad.html#sobre-esta-web">{bi("Más información", "More information")}</a>')
 
 def footer(with_amounts):
-    links = (f'<p class="links"><a href="index.html">{bi("Inicio","Home")}</a><a href="proyectos.html">{bi("Proyectos (I+D+i)","Projects (R&amp;D&amp;I)")}</a>'
+    links = (f'<p class="links"><a href="index.html">{bi("Inicio","Home")}</a><a href="recursos.html">{bi("Recursos abiertos","Open resources")}</a>'
+             f'<a href="proyectos.html">{bi("Proyectos (I+D+i)","Projects (R&amp;D&amp;I)")}</a>'
              f'<a href="cv.html">CV</a><a href="index.html#contacto">{bi("Contacto","Contact")}</a><a href="privacidad.html">{bi("Política de privacidad","Privacy policy")}</a></p>')
     return f'<footer><div class="wrap">{links}{AMOUNTS if with_amounts else ""}<p>{DISCLAIMER}</p><p>{IA}</p></div></footer>'
 
@@ -122,8 +127,36 @@ marks = ['<h3><span data-l="es">Asignaturas de los últimos', '<h3><span data-l=
 pos = [doc.rfind('<h3', 0, doc.index(m.replace('<h3>', '')) + 1) for m in marks] + [doc.rindex('</section>')]
 doc_head = doc[:pos[0]]
 parts = {i: doc[pos[i]:pos[i + 1]] for i in range(len(marks))}
-doc_home = (doc_head + parts[0] + parts[2] +
-            f'<p class="more-cta"><a class="btn red" href="cv.html#docencia-completa">{bi("Trayectoria docente completa","Full teaching record")}</a></p></section>')
+
+# ---------- recursos docentes abiertos ----------
+# En la fuente siguen dentro de Docencia (h3 «Recursos docentes abiertos», un párrafo y las fichas).
+# Aquí se separan: la página recursos.html lleva las fichas completas y la portada, un resumen con acceso directo.
+res = parts[2]
+res_intro = re.search(r'</h3>\s*<p><span data-l="es">(.*?)</span><span data-l="en">(.*?)</span></p>', res, flags=re.S)
+res_intro_es, res_intro_en = res_intro.group(1), res_intro.group(2)
+res_cards = res[res.index('<div class="cards res">'):].strip()
+fichas_res = re.findall(r'<article class="card" id="([^"]+)">(.*?)</article>', res_cards, flags=re.S)
+assert fichas_res, "No encuentro las fichas de «Recursos docentes abiertos»"
+
+mini_res = ""
+for rid, body in fichas_res:
+    kick = re.search(r'<p class="kick">.*?</p>', body, flags=re.S).group(0)
+    h4 = re.search(r'<h4>.*?</h4>', body, flags=re.S).group(0)
+    abrir = re.search(r'<a class="btn red" [^>]*>.*?</a>', body, flags=re.S)
+    abrir = abrir.group(0).replace(' class="btn red"', '', 1) + ' · ' if abrir else ''
+    mini_res += (f'<article class="card">{kick}{h4}<p class="more-link">{abrir}'
+                 f'<a href="recursos.html#{rid}">{bi("Ver la ficha", "See the details")}</a></p></article>')
+
+res_home = (f'<h3 id="recursos-abiertos">{bi("Recursos docentes abiertos", "Open teaching resources")}</h3>'
+            f'<p>{bi(res_intro_es, res_intro_en)}</p><div class="cards mini">{mini_res}</div>')
+doc_home = (doc_head + parts[0] + res_home +
+            f'<p class="more-cta acts"><a class="btn red" href="recursos.html">{bi("Todos los recursos abiertos","All open resources")}</a>'
+            f'<a class="btn red" href="cv.html#docencia-completa">{bi("Trayectoria docente completa","Full teaching record")}</a></p></section>')
+
+# En su propia página, las fichas pasan de h4 a h3 (h1 en la cabecera, h2 oculto para lectores de pantalla)
+res_page = ('<section id="recursos"><h2 class="sr">' + bi("Herramientas y materiales", "Tools and materials") + '</h2>' +
+            res_cards.replace('<h4>', '<h3>').replace('</h4>', '</h3>') + '</section>')
+
 doc_cv = ('<section id="docencia-completa"><h2>' + bi("Docencia: trayectoria completa", "Teaching: full record") + '</h2>' +
           unwrap_details(parts[1] + parts[3] + parts[4] + parts[5] + parts[6]) + '</section>')
 # En el CV la tabla de TFG va completa: se quita la selección de tres
@@ -158,6 +191,14 @@ divul, medios, contacto = section("divulgacion"), section("medios"), section("co
 priv = section("privacidad")
 priv = re.sub(r'<h2>.*?</h2>', '', priv, count=1, flags=re.S)
 
+# Datos estructurados de recursos.html: una colección que agrupa los LearningResource de la fuente
+ids_recursos = [re.search(r'"@id":\s*"([^"]+)"', b).group(1) for b in ld_recursos]
+ld_coleccion = json.dumps({"@context": "https://schema.org", "@type": "CollectionPage", "name": "Recursos docentes abiertos",
+                           "url": BASE + "recursos.html", "inLanguage": "es", "dateModified": FECHA,
+                           "isPartOf": {"@type": "WebSite", "name": "César Sánchez Meléndez", "url": BASE},
+                           "author": {"@id": BASE + "#persona"},
+                           "hasPart": [{"@id": i} for i in ids_recursos]}, ensure_ascii=False)
+
 # ---------- páginas ----------
 P = {
  "index": dict(file="index.html", url=BASE, ogtype="profile", img=BASE + "img/og-cesar-sanchez.jpg", img_alt="César Sánchez Meléndez en una mesa de ponentes",
@@ -166,8 +207,17 @@ P = {
    d_en="Engineer and associate professor at UCLM. Healthcare technology (assessment, regulation and management of medical devices) and forest bioeconomy: R&D&I projects, knowledge transfer and teaching.",
    o_es=re.search(r'<meta property="og:description" content="([^"]*)">', head).group(1),
    o_en="R&D&I and knowledge-transfer projects in healthcare technology and forest bioeconomy: 55 projects and €6.3M secured for UCLM.",
-   ld=ld_blocks,
+   ld=ld_index,
    body=hero + '<main id="contenido">' + intro + sobre + doc_home + proy_home + gest_home + divul + medios + contacto + '</main>', amounts=False),
+ "recursos": dict(file="recursos.html", url=BASE + "recursos.html", img=BASE + "img/og-recursos.png", img_alt="Recursos docentes abiertos de tecnología sanitaria",
+   t_es="Recursos docentes abiertos · César Sánchez Meléndez", t_en="Open teaching resources · César Sánchez Meléndez",
+   d_es="Herramientas interactivas y materiales docentes en abierto sobre tecnología sanitaria: clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y vídeos y protocolos de electromedicina.",
+   d_en="Open interactive tools and teaching materials on healthcare technology: MDR/IVDR medical device classifier, PICO evidence search builder, and clinical engineering videos and protocols.",
+   o_es="Clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y materiales de electromedicina: gratuitos, sin registro y para usar en el navegador.",
+   o_en="MDR/IVDR medical device classifier, PICO evidence search builder and clinical engineering materials: free, no sign-up, in your browser.",
+   ld=ld_recursos + [ld_coleccion],
+   body=pagehead("Recursos docentes abiertos", "Open teaching resources", res_intro_es, res_intro_en)
+        + '<main id="contenido">' + res_page + '</main>', amounts=False),
  "proyectos": dict(file="proyectos.html", url=BASE + "proyectos.html", img=BASE + "img/og-proyectos.png", img_alt="55 proyectos de I+D+i y 6,3 M€ captados para la UCLM",
    t_es="Proyectos de I+D+i · César Sánchez Meléndez", t_en="R&D&I projects · César Sánchez Meléndez",
    d_es="55 proyectos de investigación y transferencia desde 2000 y 6,3 M€ captados para la UCLM: bioeconomía forestal, ingeniería biomédica, formación en electromedicina y contratos con la industria.",
@@ -230,7 +280,7 @@ for k, p in P.items():
     print(p["file"], len(pages[k]))
 
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-for k in ["index", "proyectos", "cv"]:
+for k in ["index", "recursos", "proyectos", "cv"]:
     sm += f'  <url><loc>{P[k]["url"]}</loc><lastmod>{FECHA}</lastmod></url>\n'
 for herramienta in ["clasificaMD/", "buscaPICO/"]:  # se publican desde sus propios repositorios, bajo el mismo dominio
     sm += f'  <url><loc>{BASE}{herramienta}</loc><lastmod>{FECHA}</lastmod></url>\n'
