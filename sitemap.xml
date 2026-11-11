@@ -10,6 +10,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/"/>
   </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/recursos.html</loc><lastmod>2026-11-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/recursos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/recursos.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/recursos.html"/>
+  </url>
+  <url><loc>https://www.cesarsanchezmelendez.es/en/recursos.html</loc><lastmod>2026-11-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/recursos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/recursos.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.cesarsanchezmelendez.es/recursos.html"/>
+  </url>
   <url><loc>https://www.cesarsanchezmelendez.es/proyectos.html</loc><lastmod>2026-11-11</lastmod>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.cesarsanchezmelendez.es/proyectos.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.cesarsanchezmelendez.es/en/proyectos.html"/>
@@ -32,4 +42,6 @@
   </url>
   <url><loc>https://www.cesarsanchezmelendez.es/clasificaMD/</loc><lastmod>2026-11-11</lastmod></url>
   <url><loc>https://www.cesarsanchezmelendez.es/buscaPICO/</loc><lastmod>2026-11-11</lastmod></url>
+  <url><loc>https://www.cesarsanchezmelendez.es/mufps-recursos/</loc><lastmod>2026-11-11</lastmod></url>
+  <url><loc>https://www.cesarsanchezmelendez.es/ets-recursos/</loc><lastmod>2026-11-11</lastmod></url>
 </urlset>
