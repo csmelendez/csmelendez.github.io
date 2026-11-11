@@ -52,7 +52,7 @@ jobs:
           else
             echo "Sin avisos." >> "$GITHUB_STEP_SUMMARY"
           fi
-          cp _trabajo/dist/index.html _trabajo/dist/proyectos.html _trabajo/dist/cv.html \
+          cp _trabajo/dist/index.html _trabajo/dist/recursos.html _trabajo/dist/proyectos.html _trabajo/dist/cv.html \
              _trabajo/dist/privacidad.html _trabajo/dist/sitemap.xml _trabajo/dist/robots.txt .
           mkdir -p en && cp _trabajo/dist/en/*.html en/
           rm -rf _trabajo
@@ -62,7 +62,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html proyectos.html cv.html privacidad.html sitemap.xml robots.txt en
+          git add index.html recursos.html proyectos.html cv.html privacidad.html sitemap.xml robots.txt en
           if git diff --cached --quiet; then
             echo "Las páginas no cambian." >> "$GITHUB_STEP_SUMMARY"
             echo "cambios=no" >> "$GITHUB_OUTPUT"
