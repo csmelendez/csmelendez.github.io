@@ -14,7 +14,7 @@ Cada página tiene dos versiones con URL propia: en español en la raíz y en in
 
 - `robots.txt`: indica a los buscadores dónde está el mapa del sitio.
 
-La web se publica con dominio propio en https://www.cesarsanchezmelendez.es/. Las dos herramientas enlazadas desde Docencia viven en sus propios repositorios y se publican bajo el mismo dominio: el [Clasificador MDR/IVDR](https://github.com/csmelendez/clasificaMD) en https://www.cesarsanchezmelendez.es/clasificaMD/ y el [Buscador de evidencia PICO](https://github.com/csmelendez/buscaPICO) en https://www.cesarsanchezmelendez.es/buscaPICO/. La web las enlaza con las rutas `/clasificaMD/` y `/buscaPICO/`, así que los tres repositorios deben estar bajo el mismo usuario de GitHub, con esos nombres exactos.
+La web se publica con dominio propio en https://www.cesarsanchezmelendez.es/. Las dos herramientas enlazadas desde Docencia viven en sus propios repositorios y se publican bajo el mismo dominio: el [Clasificador MDR/IVDR](https://github.com/csmelendez/clasificaMD) en https://www.cesarsanchezmelendez.es/clasificaMD/ y el [Buscador de evidencia PICO](https://github.com/csmelendez/buscaPICO) en https://www.cesarsanchezmelendez.es/buscaPICO/. La web las enlaza con las rutas `/clasificaMD/` y `/buscaPICO/`, así que los tres repositorios deben estar bajo el mismo usuario de GitHub, con esos nombres exactos. Lo mismo vale para las colecciones de recursos interactivos de las asignaturas, que se enlazan con `/mufps-recursos/` ([repositorio](https://github.com/csmelendez/mufps-recursos)) y `/ets-recursos/` ([repositorio](https://github.com/csmelendez/ets-recursos)).
 
 ## Cómo se actualiza
 
