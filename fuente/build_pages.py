@@ -209,12 +209,12 @@ P = {
    o_en="R&D&I and knowledge-transfer projects in healthcare technology and forest bioeconomy: 55 projects and €6.3M secured for UCLM.",
    ld=ld_index,
    body=hero + '<main id="contenido">' + intro + sobre + doc_home + proy_home + gest_home + divul + medios + contacto + '</main>', amounts=False),
- "recursos": dict(file="recursos.html", url=BASE + "recursos.html", img=BASE + "img/og-recursos.png", img_alt="Recursos docentes abiertos de tecnología sanitaria",
+ "recursos": dict(file="recursos.html", url=BASE + "recursos.html", img=BASE + "img/og-recursos.png", img_alt="Recursos docentes abiertos: herramientas interactivas en abierto",
    t_es="Recursos docentes abiertos · César Sánchez Meléndez", t_en="Open teaching resources · César Sánchez Meléndez",
-   d_es="Herramientas interactivas y materiales docentes en abierto sobre tecnología sanitaria: clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y vídeos y protocolos de electromedicina.",
-   d_en="Open interactive tools and teaching materials on healthcare technology: MDR/IVDR medical device classifier, PICO evidence search builder, and clinical engineering videos and protocols.",
-   o_es="Clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y materiales de electromedicina: gratuitos, sin registro y para usar en el navegador.",
-   o_en="MDR/IVDR medical device classifier, PICO evidence search builder and clinical engineering materials: free, no sign-up, in your browser.",
+   d_es="Herramientas docentes interactivas en abierto: clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y recursos sobre evaluación de tecnologías sanitarias y sobre el currículo de la Formación Profesional.",
+   d_en="Open interactive teaching tools: MDR/IVDR medical device classifier, PICO evidence search builder, and resources on health technology assessment and on the vocational training curriculum.",
+   o_es="Clasificador MDR/IVDR, buscador de evidencia PICO y recursos interactivos de evaluación de tecnologías sanitarias y de currículo de FP, con el código en GitHub.",
+   o_en="MDR/IVDR classifier, PICO evidence search builder and interactive resources on health technology assessment and the vocational training curriculum, with the code on GitHub.",
    ld=ld_recursos + [ld_coleccion],
    body=pagehead("Recursos docentes abiertos", "Open teaching resources", res_intro_es, res_intro_en)
         + '<main id="contenido">' + res_page + '</main>', amounts=False),
@@ -282,7 +282,9 @@ for k, p in P.items():
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for k in ["index", "recursos", "proyectos", "cv"]:
     sm += f'  <url><loc>{P[k]["url"]}</loc><lastmod>{FECHA}</lastmod></url>\n'
-for herramienta in ["clasificaMD/", "buscaPICO/"]:  # se publican desde sus propios repositorios, bajo el mismo dominio
+# Herramientas: las rutas /<repositorio>/ que enlazan las fichas de recursos (cada una se publica desde su propio repositorio, bajo el mismo dominio)
+herramientas = list(dict.fromkeys(re.findall(r'href="(?:https://www\.cesarsanchezmelendez\.es)?/([A-Za-z0-9_-]+/)"', res_cards)))
+for herramienta in herramientas:
     sm += f'  <url><loc>{BASE}{herramienta}</loc><lastmod>{FECHA}</lastmod></url>\n'
 sm += '</urlset>\n'
 open(os.path.join(outdir, "sitemap.xml"), "w").write(sm)
