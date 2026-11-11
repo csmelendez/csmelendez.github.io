@@ -34,7 +34,7 @@ extra_css = (".pagehead{background:var(--red);color:#fff}.pagehead .in{max-width
              ".pagehead a{color:#fff}.pagehead .eyebrow a{text-decoration:none;font-weight:700}.pagehead .eyebrow a:hover{text-decoration:underline}"
              ".pagehead h1{font-size:2.2rem}.pagehead .sub{max-width:62ch;font-size:1.1rem;margin:.4em 0 0}"
              "nav a[aria-current=page]{color:var(--red);text-decoration:underline;text-underline-offset:4px}"
-             ".more-cta{margin:14px 0 0}.mini{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}.mini .card h4{font-size:1.05rem}.mini .card p{margin:.3em 0}"
+             ".more-cta{margin:14px 0 0}.mini{grid-template-columns:repeat(auto-fit,minmax(185px,1fr))}.mini .card h4{font-size:1.05rem}.mini .card p{margin:.3em 0}.mini .more-link a{white-space:nowrap}"
              ".res .card h3{font-size:1.15rem;line-height:1.25;margin:.1em 0 .4em}"
              "footer nav{position:static;border:0;background:none}footer .links{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px}"
              "@media print{.pagehead{background:#fff;color:#000}.pagehead a{color:#000}}")
