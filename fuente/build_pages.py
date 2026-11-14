@@ -157,7 +157,11 @@ doc_home = (doc_head + parts[0] + res_home +
 res_page = ('<section id="recursos"><h2 class="sr">' + bi("Herramientas y materiales", "Tools and materials") + '</h2>' +
             res_cards.replace('<h4>', '<h3>').replace('</h4>', '</h3>') + '</section>')
 
+# Las cifras docentes (quinquenios, Programa de Calidad, innovación, TFG) también encabezan la docencia del CV
+kpis_doc = re.search(r'<div class="kpis">.*?</div></div>', doc_head, flags=re.S)
+kpis_doc = kpis_doc.group(0) if kpis_doc else ""
 doc_cv = ('<section id="docencia-completa"><h2>' + bi("Docencia: trayectoria completa", "Teaching: full record") + '</h2>' +
+          kpis_doc +
           unwrap_details(parts[1] + parts[3] + parts[4] + parts[5] + parts[6]) + '</section>')
 # En el CV la tabla de TFG va completa: se quita la selección de tres
 doc_cv = re.sub(r'<ul class="doc" lang="es"><li>Modelo de indicadores.*?</ul>', '', doc_cv, flags=re.S)
@@ -199,16 +203,120 @@ ld_coleccion = json.dumps({"@context": "https://schema.org", "@type": "Collectio
                            "author": {"@id": BASE + "#persona"},
                            "hasPart": [{"@id": i} for i in ids_recursos]}, ensure_ascii=False)
 
+# ---------- diseño de noviembre de 2026 (propuesta D3) ----------
+# Portada más corta, bloque «hospital / territorio», menos rojo, fuente Public Sans alojada en /tipos/
+# y menú plegable en el móvil. El contenido sigue saliendo de la fuente y de los Excel.
+
+# Cabecera: sin el lema (lo recogen los dos cuadros) y con una entradilla más corta; nueva foto
+hero = re.sub(r'<p class="sub">.*?</p>', '', hero, count=1, flags=re.S)
+hero = re.sub(r'<p class="lead"><span data-l="es">Soy ingeniero.*?</p>', lambda _: '<p class="lead">' + bi(
+    "Ingeniero de telecomunicación y profesor titular de la Universidad de Castilla-La Mancha. Trabajo con centros sanitarios, empresas y administraciones para que la investigación se transfiera y tenga efecto.",
+    "Telecommunications engineer and associate professor at the University of Castilla-La Mancha. I work with healthcare centres, companies and public administrations so that research is transferred and makes a difference.") + '</p>',
+    hero, count=1, flags=re.S)
+hero = hero.replace('alt="César Sánchez Meléndez en una mesa de ponentes / at a conference panel"', 'alt="César Sánchez Meléndez"')
+
+def cuadro(clase, t_es, t_en, p_es, p_en, items):
+    lis = "".join(f'<li>{bi(a, b)}</li>' for a, b in items)
+    return f'<div class="{clase}"><div class="in"><h2>{bi(t_es, t_en)}</h2><p>{bi(p_es, p_en)}</p><ul>{lis}</ul></div></div>'
+
+campos = ('<section class="campos" aria-label="Campos de trabajo">' +
+          cuadro("hosp", "Ingeniería que llega al hospital", "Engineering that reaches hospitals",
+                 "Formo a los profesionales que evalúan, regulan y mantienen los productos sanitarios. Investigo en procesado de señal e inteligencia artificial para la salud, hoy con dispositivos wearable para prevenir el ictus criptogénico.",
+                 "I train the professionals who assess, regulate and maintain medical devices. My research covers signal processing and artificial intelligence for health, currently with wearable devices to prevent cryptogenic stroke.",
+                 [("Electromedicina e ingeniería clínica", "Clinical engineering and electromedicine"),
+                  ("Evaluación de tecnologías sanitarias", "Health technology assessment"),
+                  ("Regulación de productos sanitarios (MDR e IVDR)", "Medical device regulation (MDR and IVDR)")]) +
+          cuadro("terr", "…y al territorio", "…and the territory",
+                 "Desde 2018 dirijo proyectos que convierten el bosque de Cuenca en actividad económica y empleo: laboratorios de emprendimiento, alianzas entre territorio y empresa y madera de alto valor añadido.",
+                 "Since 2018 I have led projects that turn the forests of Cuenca into economic activity and jobs: entrepreneurship labs, territory-business alliances and high-value timber.",
+                 [("Bioeconomía forestal", "Forest bioeconomy"),
+                  ("Cátedra Oportunidades Reto Demográfico", "Demographic Challenge Opportunities Chair"),
+                  ("Divulgación científica en el medio rural", "Science outreach in rural areas")]) +
+          '</section>')
+
+# Resumen: las tres tarjetas de áreas dejan paso a los dos cuadros; se quedan las cifras, los financiadores y el destacado
+intro_home = re.sub(r'<div class="cards">.*?(?=<div class="kpis">)', '', intro, count=1, flags=re.S)
+
+# Docencia en portada: entradilla, enlace al CV (asignaturas y cifras) y recursos abiertos; un solo botón
+doc_home = (doc_head[:doc_head.index('</h2>') + 5] +
+            '<p class="lead">' + bi("Profesor titular desde 2010 en la Escuela Politécnica de Cuenca. Imparto calidad y gestión y evaluación de tecnologías sanitarias, electromedicina e instrumentación electrónica en grado y máster, y colaboro en la formación del profesorado de Formación Profesional.",
+                                    "Associate professor at the Polytechnic School of Cuenca since 2010. I teach quality and management and health technology assessment, clinical engineering and electronic instrumentation at undergraduate and master’s level, and I contribute to vocational training teacher education.") + '</p>' +
+            f'<p class="more-cta"><a href="cv.html#docencia-completa">{bi("Asignaturas y trayectoria docente completa","Courses and full teaching record")}</a></p>' +
+            res_home +
+            f'<p class="more-cta"><a class="btn red" href="recursos.html">{bi("Todos los recursos abiertos","All open resources")}</a></p></section>')
+
+# Gestión en portada: sin la rejilla de cifras (siguen en el CV) y con enlace en lugar de botón
+gest_home = re.sub(r'<div class="kpis">.*?</div></div>', '', gest_home, count=1, flags=re.S)
+gest_home = gest_home.replace('<a class="btn red" href="cv.html#gestion">', '<a href="cv.html#gestion">')
+
+# Medios en portada: la destacada y tres publicaciones; tres noticias de prensa; el resto, desplegable
+def plegar(html, patron_lista, patron_item, contenedor_abre, contenedor_cierra, resumen):
+    m = re.search(patron_lista, html, flags=re.S)
+    if not m:
+        return html
+    items = re.findall(patron_item, m.group(1), flags=re.S)
+    if len(items) <= 3:
+        return html
+    nuevo = (contenedor_abre + "".join(items[:3]) + contenedor_cierra +
+             f'<details class="more"><summary>{resumen}</summary>' + contenedor_abre + "".join(items[3:]) + contenedor_cierra + '</details>')
+    return html.replace(m.group(0), nuevo, 1)
+
+medios = plegar(medios, r'<div class="posts">(.*?)</div>(?=<p class="acts">)', r'<div class="post">.*?</div>',
+                '<div class="posts">', '</div>', bi("Más publicaciones en LinkedIn", "More LinkedIn posts"))
+medios = plegar(medios, r'<ul class="news">(.*?)</ul>', r'<li>.*?</li>',
+                '<ul class="news">', '</ul>', bi("Todas las entrevistas y noticias", "All interviews and news"))
+
+# Menú: botón «Menú» en el móvil y CV como botón propio (es otra página)
+_nav_original = nav
+def nav(page):
+    h = _nav_original(page)
+    h = h.replace('<a href="cv.html"', '<a class="cv" href="cv.html"', 1)
+    boton = f'<button class="menu noprint" type="button" aria-expanded="false">{bi("Menú", "Menu")}</button>'
+    return h.replace('<div class="in">', '<div class="in">' + boton, 1)
+
+MENU_JS = ('<script>(function(){var n=document.querySelector("nav[aria-label=Principal]"),b=n&&n.querySelector(".menu");if(!b)return;'
+           'b.addEventListener("click",function(){var a=n.classList.toggle("abierto");b.setAttribute("aria-expanded",a)});'
+           'n.querySelectorAll(".in>a").forEach(function(x){x.addEventListener("click",function(){n.classList.remove("abierto");b.setAttribute("aria-expanded","false")})})})();</script>')
+_script_original = script_for
+def script_for(p):
+    return _script_original(p) + MENU_JS
+
+fuentes = "".join(f'@font-face{{font-family:"Public Sans";src:url(/tipos/PublicSans-{n}.woff2) format("woff2");font-weight:{w};font-style:{s};font-display:swap}}'
+                  for n, w, s in [("Regular", 400, "normal"), ("Italic", 400, "italic"), ("SemiBold", 600, "normal"), ("Bold", 700, "normal"), ("ExtraBold", 800, "normal")])
+D3_CSS = (fuentes +
+    'body{font-family:"Public Sans",system-ui,"Segoe UI",Arial,sans-serif}'
+    'h1{font-weight:800;letter-spacing:-.02em}h2{font-weight:800;letter-spacing:-.015em}'
+    '.btn,.btn.red,.btn.li{border-radius:10px}'
+    '.card,.post,.kpis div,.featured,.li-featured,.news li,form{box-shadow:none;border:1px solid var(--line);border-radius:14px}'
+    '.card{border-top:4px solid var(--red)}.post{border-top:4px solid #0a66c2}'
+    '.featured{border-left:6px solid var(--red)}.li-featured{border-left:6px solid #0a66c2}.news li{border-radius:10px;border-left:4px solid var(--red)}'
+    '.more-cta a:not(.btn){font-weight:700}'
+    'nav a.cv{border:1px solid var(--ink);border-radius:8px;padding:1px 10px}nav a.cv:hover{border-color:var(--red)}'
+    'nav .menu{display:none;font:inherit;font-weight:700;background:#fff;color:var(--red);border:1px solid var(--red);border-radius:8px;padding:4px 14px;min-height:40px;cursor:pointer}'
+    '@media(max-width:760px){nav .menu{display:inline-block}nav .in>a{display:none}nav.abierto .in>a{display:block;width:100%;padding:6px 0}nav.abierto .in>a.cv{display:inline-block;width:auto;padding:1px 10px;margin:4px 0}}'
+    '.campos{max-width:none;padding:0;display:flex;flex-wrap:wrap}'
+    '.campos>div{flex:1 1 420px;min-width:0;border-top:4px solid var(--red)}'
+    '.campos .in{max-width:540px;box-sizing:border-box;padding:44px 24px 52px}'
+    '.campos .hosp{background:#fff}.campos .hosp .in{margin-left:auto}.campos .terr{background:#2a2f33;color:#fff}'
+    '.campos h2{border:0;margin:0;padding:0;font-size:2.1rem;line-height:1.1}.campos .hosp h2{color:var(--red)}'
+    '.campos p{margin:.9em 0 0}.campos .hosp p{color:#4f565b}.campos .terr p{color:#d5d8db}'
+    '.campos ul{list-style:none;margin:1.2em 0 0;padding:0;font-weight:600}.campos li{border-top:1px solid var(--line);padding:8px 0}.campos .terr li{border-color:#4a5157}'
+    '#contacto{background:#2a2f33;color:#e3e5e7;box-shadow:0 0 0 100vmax #2a2f33;clip-path:inset(0 -100vmax);margin-top:48px;padding-top:8px;padding-bottom:48px}'
+    '#contacto h2{color:#fff}#contacto a:not(.btn){color:#fff}#contacto .lead,#contacto .nota{color:#d5d8db}'
+    'footer{background:#1f2326;margin-top:0}'
+    '@media print{.campos .terr,#contacto{background:#fff;color:#000;box-shadow:none;clip-path:none}.campos .terr p,#contacto .lead{color:#000}#contacto a:not(.btn){color:var(--red)}nav .menu{display:none}}')
+style = style.replace('</style>', D3_CSS + '</style>')
+
 # ---------- páginas ----------
 P = {
- "index": dict(file="index.html", url=BASE, ogtype="profile", img=BASE + "img/og-cesar-sanchez.jpg", img_alt="César Sánchez Meléndez en una mesa de ponentes",
+ "index": dict(file="index.html", url=BASE, ogtype="profile", img=BASE + "img/og-cesar-sanchez.jpg", img_alt="César Sánchez Meléndez",
    t_es="César Sánchez Meléndez · Tecnología sanitaria y bioeconomía forestal", t_en="César Sánchez Meléndez · Healthcare technology and forest bioeconomy",
    d_es=re.search(r'<meta name="description" content="([^"]*)">', head).group(1),
    d_en="Engineer and associate professor at UCLM. Healthcare technology (assessment, regulation and management of medical devices) and forest bioeconomy: R&D&I projects, knowledge transfer and teaching.",
    o_es=re.search(r'<meta property="og:description" content="([^"]*)">', head).group(1),
    o_en="R&D&I and knowledge-transfer projects in healthcare technology and forest bioeconomy: 55 projects and €6.3M secured for UCLM.",
    ld=ld_index,
-   body=hero + '<main id="contenido">' + intro + sobre + doc_home + proy_home + gest_home + divul + medios + contacto + '</main>', amounts=False),
+   body=hero + '<main id="contenido">' + campos + intro_home + sobre + doc_home + proy_home + gest_home + divul + medios + contacto + '</main>', amounts=False),
  "recursos": dict(file="recursos.html", url=BASE + "recursos.html", img=BASE + "img/og-recursos.png", img_alt="Recursos docentes abiertos: herramientas interactivas en abierto",
    t_es="Recursos docentes abiertos · César Sánchez Meléndez", t_en="Open teaching resources · César Sánchez Meléndez",
    d_es="Herramientas docentes interactivas en abierto: clasificador de productos sanitarios MDR/IVDR, buscador de evidencia PICO y recursos sobre evaluación de tecnologías sanitarias y sobre el currículo de la Formación Profesional.",
@@ -228,7 +336,7 @@ P = {
                  "55 proyectos de investigación y transferencia desde 2000, con 6,3 M€ captados para la UCLM y 3,0 M€ como investigador principal o coprincipal.",
                  "55 research and knowledge-transfer projects since 2000, with €6.3M secured for UCLM and €3.0M as principal or co-principal investigator.")
         + '<main id="contenido">' + proy_page + section("investigacion") + section("transferencia") + '</main>', amounts=True),
- "cv": dict(file="cv.html", url=BASE + "cv.html", img=BASE + "img/og-cesar-sanchez.jpg", img_alt="César Sánchez Meléndez en una mesa de ponentes",
+ "cv": dict(file="cv.html", url=BASE + "cv.html", img=BASE + "img/og-cesar-sanchez.jpg", img_alt="César Sánchez Meléndez",
    t_es="Currículo · César Sánchez Meléndez", t_en="CV · César Sánchez Meléndez",
    d_es="Trayectoria docente completa en la UCLM desde 1999, formación en electromedicina y gestión universitaria: cargos unipersonales y órganos colegiados.",
    d_en="Full teaching record at UCLM since 1999, clinical engineering training and university management: sole-office positions and collegiate bodies.",
