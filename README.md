@@ -11,6 +11,7 @@ Código fuente de https://www.cesarsanchezmelendez.es/: tecnología sanitaria y 
 Cada página tiene dos versiones con URL propia: en español en la raíz y en inglés en la carpeta `en/` (https://www.cesarsanchezmelendez.es/en/). Las dos se enlazan entre sí con `hreflang` y el botón ES/EN lleva a la página equivalente del otro idioma. Comparten estilos y menú y no usan dependencias externas ni cookies. Los enlaces antiguos con `?lang=en` llevan a la versión inglesa.
 - `en/`: versión inglesa de las cuatro páginas (se genera sola; no se edita).
 - `img/`: fotografía y vista previa para redes sociales.
+- `tipos/`: la tipografía Public Sans (licencia SIL Open Font License, en `tipos/OFL.txt`), alojada en la propia web para no enviar datos de los visitantes a servicios externos.
 
 - `robots.txt`: indica a los buscadores dónde está el mapa del sitio.
 
