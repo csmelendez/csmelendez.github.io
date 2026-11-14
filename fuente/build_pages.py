@@ -214,6 +214,9 @@ hero = re.sub(r'<p class="lead"><span data-l="es">Soy ingeniero.*?</p>', lambda 
     "Telecommunications engineer and associate professor at the University of Castilla-La Mancha. I work with healthcare centres, companies and public administrations so that research is transferred and makes a difference.") + '</p>',
     hero, count=1, flags=re.S)
 hero = hero.replace('alt="César Sánchez Meléndez en una mesa de ponentes / at a conference panel"', 'alt="César Sánchez Meléndez"')
+# Versión en la dirección de la foto: si se cambia el archivo, sube el número y los navegadores no muestran la antigua guardada
+FOTO_VERSION = "2026-11-14"
+hero = hero.replace('src="img/cesar-sanchez.jpg"', f'src="img/cesar-sanchez.jpg?v={FOTO_VERSION}"')
 
 def cuadro(clase, t_es, t_en, p_es, p_en, items):
     lis = "".join(f'<li>{bi(a, b)}</li>' for a, b in items)
