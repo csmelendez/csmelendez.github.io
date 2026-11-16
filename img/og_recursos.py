@@ -6,9 +6,9 @@ B,R="DejaVuSans-Bold.ttf","DejaVuSans.ttf"
 im=Image.new("RGB",(W,H),BG); d=ImageDraw.Draw(im); d.rectangle([0,0,22,H],fill=RED)
 x=70
 d.text((x,62),"RECURSOS DOCENTES ABIERTOS",font=f(B,24),fill=RED)
-d.text((x,104),"Herramientas y materiales",font=f(B,52),fill=INK)
-d.text((x,166),"de tecnología sanitaria",font=f(B,52),fill=INK)
-cols=[("MDR/IVDR",["Clasificador de","productos sanitarios"]),("PICO",["Buscador de","evidencia"]),("Vídeos",["Protocolos de","electromedicina"])]
+d.text((x,104),"Recursos interactivos",font=f(B,52),fill=INK)
+d.text((x,166),"en abierto, por asignatura",font=f(B,52),fill=INK)
+cols=[("CGT",["Calidad y gestión en","tecnología sanitaria"]),("ETS",["Evaluación de","tecnologías sanitarias"]),("FP",["Currículo de la","Formación Profesional"])]
 cx=x
 for big,lab in cols:
     d.rounded_rectangle([cx,262,cx+330,432],radius=16,fill=(255,255,255),outline=LINE,width=2)
@@ -16,7 +16,7 @@ for big,lab in cols:
     d.text((cx+24,356),lab[0],font=f(R,24),fill=GREY)
     d.text((cx+24,388),lab[1],font=f(R,24),fill=GREY)
     cx+=356
-d.text((x,462),"Gratuitos · Sin registro · Funcionan en el navegador",font=f(R,24),fill=INK)
+d.text((x,462),"Clasificador MDR/IVDR · Plazos MDR/IVDR · Buscador PICO · Código en GitHub",font=f(R,24),fill=INK)
 d.line([(70,520),(W-70,520)],fill=LINE,width=2)
 d.text((x,545),"César Sánchez Meléndez",font=f(B,26),fill=INK)
 d.text((x,582),"Profesor titular · Universidad de Castilla-La Mancha",font=f(R,22),fill=GREY)
